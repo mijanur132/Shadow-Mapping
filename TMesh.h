@@ -22,6 +22,7 @@ public:
 	void Allocate(int _vertsN, int _trisN);
 	void DrawCubeQuadFaces(FrameBuffer *fb, PPC *ppc, unsigned int color);
 	void DrawWireFrame(FrameBuffer *fb, PPC *ppc, unsigned int color);
+	void DrawPlanerRect(FrameBuffer* fb, V3 cc, float sideLength, PPC* ppc, unsigned int color);
 	void LoadBin(char *fname);
 	V3 GetCenter();
 	void SetCenter(V3 center);
@@ -29,6 +30,7 @@ public:
 	void Rotate(V3 aO, V3 aDir, float theta);
 	//void RenderFilled(FrameBuffer *fb, PPC *ppc);
 	void RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka);
+	void RenderFilled(FrameBuffer* fb, PPC* ppc);
 	V3 SetEEQ(V3 v0, V3 v1, V3 v2);
 	M33 SetEEQs(V3 pv0, V3 pv1, V3 pv2);
 	M33 SetSSIM(V3 pv0, V3 pv1, V3 pv2);

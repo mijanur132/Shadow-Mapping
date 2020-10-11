@@ -141,6 +141,50 @@ void TMesh::DrawCubeQuadFaces(FrameBuffer *fb, PPC *ppc, unsigned int color) {
 
 }
 
+void TMesh::DrawPlanerRect(FrameBuffer* fb, V3 cc, float sideLength, PPC* ppc, unsigned int color) {
+
+	vertsN = 4;
+	trisN = 2;
+	Allocate(vertsN, trisN);
+
+
+	int vi = 0;
+	verts[vi] = cc + V3(-sideLength / 2.0f, +sideLength / 2.0f, 0);
+	vi++;
+	verts[vi] = cc + V3(-sideLength / 2.0f, -sideLength / 2.0f,0);
+	vi++;
+	verts[vi] = cc + V3(+sideLength / 2.0f, -sideLength / 2.0f, 0);
+	vi++;
+	verts[vi] = cc + V3(+sideLength / 2.0f, +sideLength / 2.0f,0);
+	vi++;
+
+
+	int tri = 0;
+	tris[3 * tri + 0] = 0;
+	tris[3 * tri + 1] = 1;
+	tris[3 * tri + 2] = 2;
+	tri++;
+	tris[3 * tri + 0] = 2;
+	tris[3 * tri + 1] = 3;
+	tris[3 * tri + 2] = 0;
+	tri++;
+
+	for (int vi = 0; vi < 4; vi++) {
+		colors[vi].SetFromColor(color);		
+	}
+
+	V3 v01 = verts[1] - verts[0];
+	V3 v03 = verts[3] - verts[1];
+
+	V3 normal = v01 ^ v03;
+
+	normal=normal.Normalized();
+	for (int vi = 0; vi < 4; vi++) {
+		normals[vi]=normal;
+	}
+
+}
+
 void TMesh::DrawWireFrame(FrameBuffer *fb, PPC *ppc, unsigned int color) {
 	//trisN = 2; //temp just to check one face of the cube for hw3 other wise delte this line.
 	for (int tri = 0; tri < trisN; tri++) {
@@ -261,7 +305,7 @@ void TMesh::Rotate(V3 aO, V3 aDir, float theta) {
 	}
 
 }
-/*
+
 
 void TMesh::RenderFilled(FrameBuffer *fb, PPC *ppc) {
 
@@ -271,7 +315,7 @@ void TMesh::RenderFilled(FrameBuffer *fb, PPC *ppc) {
 			pverts[vi] = V3(FLT_MAX, FLT_MAX, FLT_MAX);
 	}
 
-	trisN = 2; //temp just to check one face of the cube for hw3 other wise delte this line.
+	//trisN = 2; //temp just to check one face of the cube for hw3 other wise delte this line.
 
 	for (int tri = 0; tri < trisN; tri++) {
 		unsigned int vinds[3] = { tris[3 * tri + 0], tris[3 * tri + 1], tris[3 * tri + 2]};
@@ -325,10 +369,12 @@ void TMesh::RenderFilled(FrameBuffer *fb, PPC *ppc) {
 	delete []pverts;
 
 }
-*/
+
 
 
 void TMesh::RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
+
+	//int trisN = 1;
 
 	V3* pverts = new V3[vertsN];
 	for (int vi = 0; vi < vertsN; vi++) {
@@ -388,7 +434,10 @@ void TMesh::RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
 					continue; // outside of triangle
 				float currz = zLE * currPix;
 				if (fb->Farther(u, v, currz))
+				{
+					cout << "further z" << endl;
 					continue; // hidden
+				}
 				V3 currColor = cLEm * currPix;
 
 				// normal at current pixel
@@ -412,8 +461,11 @@ void TMesh::RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
 }
 
 
-void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb)
+void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb1)
 {
+	//int trisN = 1;
+
+
 
 	V3* pverts = new V3[vertsN];
 	for (int vi = 0; vi < vertsN; vi++) {
@@ -447,18 +499,22 @@ void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb)
 		V3 zv(pverts[vinds[0]][2], pverts[vinds[1]][2], pverts[vinds[2]][2]);
 		V3 zLE = ssim * zv;
 
-
-		for (int v = top; v <= bottom; v++) {
+		for (int v = top; v <= bottom; v++) 
+		{
 			for (int u = left; u <= right; u++) {
 				V3 currPix(.5f + (float)u, .5f + (float)v, 1.0f);
 				V3 sid = eeqsm * currPix;
 				if (sid[0] < 0.0f || sid[1] < 0.0f || sid[2] < 0.0f)
 					continue; // outside of triangle
 				float currz = zLE * currPix;
-				if (fb->FartherLightZ(fb->zbL1, u, v, currz))
+				//cout << currz << endl;
+				if (fb->FartherLightZ(fb->zbL1, u, v, currz))					
 					continue; // hidden
-				V3 currColor = V3(currz, 0, 0);
+				
+				//float colz = abs(currz)/10;
+				//V3 currColor = V3(colz, 0, 0);
 				//fb->Set(u, v, currColor.GetColor());
+				
 			}
 		}
 
@@ -471,6 +527,8 @@ void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb)
 
 
 void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 C, V3 L, float ka) {
+
+
 
 	V3* pverts = new V3[vertsN];
 	for (int vi = 0; vi < vertsN; vi++) {
@@ -534,23 +592,22 @@ void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 
 				
 				V3 lighFrameP(0, 0, 0);
 				LightPPC->Project(unprojectedP, lighFrameP);
-
+				
+				
 				if (fb->FartherLightZCompare(fb->zbL1,lighFrameP[0], lighFrameP[1],lighFrameP[2] ))
 				{
 
-					V3 currColor = cLEm * currPix;
-
-					// normal at current pixel
+					V3 currColor = cLEm * currPix;					
 					
-					currColor = C*ka;
+					currColor = C * ka;
 					fb->Set(u, v, currColor.GetColor());
 					
-					continue; // hidden
+					continue; 
 				}
 
 				if (fb->Farther(u, v, currz))
 				{
-					continue; // hidden
+					continue; 
 				}
 
 

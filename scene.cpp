@@ -22,8 +22,8 @@ Scene::Scene() {
 
 	int u0 = 20;
 	int v0 = 100;
-	int h = 600;
-	int w = 800;
+	int h = 800;
+	int w = 1000;
 
 	fb = new FrameBuffer(u0, v0, w, h, 0);
 	fb->label("SW 1");
@@ -32,8 +32,8 @@ Scene::Scene() {
 
 	fb3 = new FrameBuffer(u0 + w + 30, v0, w, h, 0);
 	fb3->label("SW 3");
-	fb3->show();
-	fb3->redraw();
+	//fb3->show();
+	//fb3->redraw();
 
 
 	gui->uiw->position(u0, v0 + h + 50);
@@ -41,39 +41,36 @@ Scene::Scene() {
 	float hfov = 90.0f;
 	ppc = new PPC(hfov, fb->w, fb->h);
 	ppc3 = new PPC(hfov, fb3->w, fb3->h);
-
-	tmeshesN = 2;
+	
+	tmeshesN = 3;
 	tmeshes = new TMesh[tmeshesN];
 
-	V3 cc(60.0f, 15.0f, -170.0f);
-	float sideLength = 20.0f;
-
-	V3 col = V3(0, 0, 1);
-	V3 col1 = V3(0, 1, 0);
+	V3 cc(0.0f, 0.0f, -150.0f);   ////***********center of 0
 	
-
-	//tmeshes[0].SetToCube(cc, sideLength, col.GetColor(), col1.GetColor());
-	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 90.0f);
-	tmeshes[0].LoadBin("geometry/teapot1K.bin");
-
+	V3 col = V3(0, 0, 1.0f);
+	V3 col1 = V3(1.0f, 0, 0);
+	
+	//tmeshes[0].LoadBin("geometry/teapot1K.bin");
+	tmeshes[0].DrawPlanerRect(fb, cc, 120, ppc, col1.GetColor());	
 	tmeshes[0].SetCenter(cc);
 	tmeshes[0].onFlag = 1;
 
+
+
 	tmeshes[1].LoadBin("geometry/teapot1K.bin");
-	//	tmeshes[1].LoadBin("geometry/teapot57K.bin");
-	tmeshes[1].SetCenter(V3(0.0f, 0.0f, -140.0f));
+		//tmeshes[1].LoadBin("geometry/teapot57K.bin");
+	tmeshes[1].SetCenter(V3(0.0f, 0.0f, -50.0f));  //***************************center of 1
 //	tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(0, 1, 0), 90.0f);
 	tmeshes[1].onFlag = 1;
 	//vf = 20.0f;
-
-	L = V3(-0.0f, 0.0f,-10.0f);
-	float hfov1 = 60.0f;
+	ppc->SetPose(V3(50.0f, 45.0f, 65.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
+	L = V3(0.0f, -40.0f,-200.0f);  //*********************************************center of light camera
+	float hfov1 = 90.0f;
 	LightSrcPPC = new PPC(hfov1, fb->w, fb->h);
 	LightSrcPPC->SetPose(L, tmeshes[1].GetCenter(), V3(0, 1, 0));
 	ka = 0.2f;
 
-//	tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 90.0f);
-	//tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(0, 1, 0), 90.0f);
+	fb->redraw();
 
 	Render();
 
@@ -89,7 +86,7 @@ void Scene::Render() {
 
 void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 
-	for (int i = 0; i < 2000; i++)
+	for (int i = 0; i < 20000; i++)
 	{
 		cout << i << endl;
 
@@ -104,29 +101,31 @@ void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 			tmeshes[tmi].RenderShadowZmap(rfb, LightSrcPPC, rfb->zbL1);
 
 		}
-
+		cout << "zmap" << endl;
 		for (int tmi = 0; tmi < tmeshesN; tmi++) {
 			if (!tmeshes[tmi].onFlag)
 				continue;
 
 			V3 C(1.0f, 0.0f, 0.0f);
 			tmeshes[tmi].Light(C, L, ka);
-			//tmeshes[tmi].RenderFilled(rfb, rppc);
+			
 			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, LightSrcPPC, C, L, ka);
+			
 		}
+		cout << "lightp" << endl;
 			   
-		V3 col1 = V3(11, 0, 0);
-		//rfb->Draw3DPoint(LightSrcPPC->C, rppc, col1.GetColor(), 5);
+		V3 col1 = V3(1, 0, 0);
+		rfb->Draw3DPoint(LightSrcPPC->C, rppc, col1.GetColor(), 20);
 
 		rfb->redraw();
 		Fl::check();
-		//tmeshes[0].Rotate(tmeshes[1].GetCenter(),V3(0,-1,0),0.50f);
-		//L=L.RotatePoint((tmeshes[1].GetCenter()), V3(0, 1, 0), 0.250f);
-		L = L + (V3(0.0f, 0, -0.1f));
+		//tmeshes[1].Rotate(tmeshes[1].GetCenter(),V3(0,1,0),0.20f);
+		L=L.RotatePoint((tmeshes[1].GetCenter()), V3(0, 1, 0), -0.30f);
+		//L = L + (V3(0.100f, 00.0f, 0.0f));
 		//L = V3(140.0f, 0.0f, -100.0f);
-		
-		LightSrcPPC->SetPose(L, tmeshes[1].GetCenter(), V3(0, 1, 0));
 
+		LightSrcPPC->SetPose(L, tmeshes[1].GetCenter(), V3(0, 1, 0));
+		
 
 	}
 	//tmeshes[0].SetCenter(V3 (50.0f, -15.0f, -100.0f));

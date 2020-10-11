@@ -178,9 +178,9 @@ int FrameBuffer::FartherLightZ(float* zb1, int u, int v, float currz) {
 	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
 		return 1;
 	int uv = (h - 1 - v) * w + u;
-	if (currz < zb1[uv])
+	if (currz < zbL1[uv])
 		return 1;
-	zb1[uv] = currz;
+	zbL1[uv] = currz;
 	return 0;
 
 }
@@ -189,10 +189,11 @@ int FrameBuffer::FartherLightZCompare(float* zb1, int u, int v, float currz) {
 	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
 		return 1;
 	int uv = (h - 1 - v) * w + u;
-	if (currz+2 < zb1[uv])
+	if (currz+2 < zbL1[uv] )
 		return 1;
-	
-	return 0;
+	else {
+		return 0;
+	}
 
 }
 
@@ -239,7 +240,7 @@ void FrameBuffer::Draw3DSegment(V3 P0, V3 P1, PPC *ppc, V3 c0, V3 c1) {
 		return;
 	if (!ppc->Project(P1, p1))
 		return;
-
+	cout << p0 << endl;
 	Draw2DSegment(p0, c0, p1, c1);
 
 }
