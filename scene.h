@@ -26,7 +26,7 @@ public:
 	void NewButton();
 	void Render();
 	void Render(FrameBuffer* rfb, PPC* rppc);
-	//void Render(FrameBuffer* fb, PPC* ppc, texture* t1, TMesh* tmesh);
+	void Render(FrameBuffer* fb, PPC* ppc,TMesh* tmesh);
 	V3 L; // point light source
 	float ka; // ambient lighting coefficient
 };

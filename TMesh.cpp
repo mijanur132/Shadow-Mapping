@@ -330,8 +330,8 @@ void TMesh::RenderFilled(FrameBuffer *fb, PPC *ppc) {
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 		
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -395,8 +395,8 @@ void TMesh::RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -486,8 +486,8 @@ void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb1)
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -549,8 +549,8 @@ void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -658,8 +658,8 @@ void TMesh::RenderFilledLight(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -831,7 +831,7 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 
 	trisN = 2; //temp just to check one face of the cube for hw3 other wise delte this line.
 
-	for (int tri = 0; tri < trisN; tri++) 
+	for (int tri = 0; tri < trisN; tri++)
 	{
 		unsigned int vinds[3] = { tris[3 * tri + 0], tris[3 * tri + 1], tris[3 * tri + 2] };
 		if (
@@ -845,8 +845,8 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 		aabb.AddPoint(pverts[vinds[1]]);
 		aabb.AddPoint(pverts[vinds[2]]);
 		// clipping
-		// if (!aabb.ClipWithFrame(fb->w, fb->h))
-		//	continue;
+		if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
 
 		int left = (int)(aabb.corners[0][0] + .5f);
 		int right = (int)(aabb.corners[1][0] - .5f);
@@ -860,8 +860,8 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 		V3 zv(pverts[vinds[0]][2], pverts[vinds[1]][2], pverts[vinds[2]][2]);
 		V3 zLE = ssim * zv;
 
-	
-		V3 texS(textureSTpair[vinds[0]][0] , textureSTpair[vinds[1]][0] , textureSTpair[vinds[2]][0]);
+
+		V3 texS(textureSTpair[vinds[0]][0], textureSTpair[vinds[1]][0], textureSTpair[vinds[2]][0]);
 		V3 texT(textureSTpair[vinds[0]][1], textureSTpair[vinds[1]][1], textureSTpair[vinds[2]][1]);
 		V3 sLE = ssim * texS;
 		V3 tLE = ssim * texT;
@@ -885,28 +885,28 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 				currPix[2] = currz;
 				V3 UcurrPix = ppc->UnProject(currPix);
 				V3 uvw(0, 0, 0);
-				GetBarryCentric(verts[vinds[0]], verts[vinds[1]], verts[vinds[2]], UcurrPix, uvw);								
-				float currS = (uvw.xyz[2] * textureSTpair[vinds[0]][0]+ uvw.xyz[0] * textureSTpair[vinds[1]][0]+ uvw.xyz[1] * textureSTpair[vinds[2]][0])*t1->w;
-				float currT = (uvw.xyz[2] * textureSTpair[vinds[0]][1] + uvw.xyz[0] * textureSTpair[vinds[1]][1] + uvw.xyz[1] * textureSTpair[vinds[2]][1])*t1->h;
-						
+				GetBarryCentric(verts[vinds[0]], verts[vinds[1]], verts[vinds[2]], UcurrPix, uvw);
+				float currS = (uvw.xyz[2] * textureSTpair[vinds[0]][0] + uvw.xyz[0] * textureSTpair[vinds[1]][0] + uvw.xyz[1] * textureSTpair[vinds[2]][0]) * t1->w;
+				float currT = (uvw.xyz[2] * textureSTpair[vinds[0]][1] + uvw.xyz[0] * textureSTpair[vinds[1]][1] + uvw.xyz[1] * textureSTpair[vinds[2]][1]) * t1->h;
+
 #endif
 
 #if 0
 				cout << "unprojected curr pix and barrycentric uvw:" << endl;
-				cout << UcurrPix << endl;				
-				cout << uvw<< endl;
+				cout << UcurrPix << endl;
+				cout << uvw << endl;
 				cout << verts[vinds[0]] << endl;
 				cout << verts[vinds[1]] << endl;
 				cout << verts[vinds[2]] << endl;
-				cout <<"texS"<< textureSTpair[vinds[0]][0] << " " << textureSTpair[vinds[1]][0] << " " << textureSTpair[vinds[2]][0] << endl;
+				cout << "texS" << textureSTpair[vinds[0]][0] << " " << textureSTpair[vinds[1]][0] << " " << textureSTpair[vinds[2]][0] << endl;
 				cout << "texT" << textureSTpair[vinds[0]][1] << " " << textureSTpair[vinds[1]][1] << " " << textureSTpair[vinds[2]][1] << endl;
 				cout << "j, i, T, s:" << v << "," << u << "," << currT << "," << currS << endl;
 				cout << pixIJ << endl;
 #endif
 
 #if 0
-				int currS = sLE * currPix*t1->w;
-				int currT = tLE * currPix*t1->h;
+				int currS = sLE * currPix * t1->w;
+				int currT = tLE * currPix * t1->h;
 				//cout << "j, i, T, s:" << v << "," << u << "," << currT << "," << currS << endl;
 				int pixIJ = currS + currT * t1->w;
 				//cout << pixIJ << endl;
@@ -914,7 +914,118 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 
 #if 0
 				//use this two lines to check weather interpolation works or not based on the colors of the vertices
-				V3 color = V3(uvw[2],0, 0);
+				V3 color = V3(uvw[2], 0, 0);
+				unsigned int color_uvw = color.GetColor();
+
+#endif
+				//unsigned int color_uvw = bilinearinterpolation(t1, currS, currT);
+				//unsigned int color_uvw = NonBilinearReginterpolation(t1, currS, currT);
+				if (fb->Farther(u, v, currz))
+					continue; // hidden
+
+				//fb->Set(u, v, color_uvw);
+			}
+		}
+
+	}
+
+	delete[]pverts;
+}
+
+void TMesh::RenderTextureProjector(FrameBuffer* fb, PPC* ppc, FrameBuffer* t1) {
+
+	V3* pverts = new V3[vertsN];
+	for (int vi = 0; vi < vertsN; vi++) {
+		if (!ppc->Project(verts[vi], pverts[vi]))
+			pverts[vi] = V3(FLT_MAX, FLT_MAX, FLT_MAX);
+	}
+
+	trisN = 2; //temp just to check one face of the cube for hw3 other wise delte this line.
+
+	for (int tri = 0; tri < trisN; tri++)
+	{
+		unsigned int vinds[3] = { tris[3 * tri + 0], tris[3 * tri + 1], tris[3 * tri + 2] };
+		if (
+			pverts[vinds[0]][0] == FLT_MAX ||
+			pverts[vinds[1]][0] == FLT_MAX ||
+			pverts[vinds[2]][0] == FLT_MAX
+			)
+			continue;
+
+		AABB aabb(pverts[vinds[0]]);
+		aabb.AddPoint(pverts[vinds[1]]);
+		aabb.AddPoint(pverts[vinds[2]]);
+		// clipping
+		 if (!aabb.clipwithframe(fb->w, fb->h))
+			continue;
+
+		int left = (int)(aabb.corners[0][0] + .5f);
+		int right = (int)(aabb.corners[1][0] - .5f);
+		int top = (int)(aabb.corners[0][1] + .5f);
+		int bottom = (int)(aabb.corners[1][1] - .5f);
+
+		M33 eeqsm = SetEEQs(pverts[vinds[0]], pverts[vinds[1]], pverts[vinds[2]]);
+		M33 ssim = SetSSIM(pverts[vinds[0]], pverts[vinds[1]], pverts[vinds[2]]);
+
+
+		V3 zv(pverts[vinds[0]][2], pverts[vinds[1]][2], pverts[vinds[2]][2]);
+		V3 zLE = ssim * zv;
+
+
+		V3 texS(textureSTpair[vinds[0]][0], textureSTpair[vinds[1]][0], textureSTpair[vinds[2]][0]);
+		V3 texT(textureSTpair[vinds[0]][1], textureSTpair[vinds[1]][1], textureSTpair[vinds[2]][1]);
+		V3 sLE = ssim * texS;
+		V3 tLE = ssim * texT;
+#if 0
+		cout << verts[vinds[0]] << verts[vinds[1]] << verts[vinds[2]] << endl;
+		cout << "texS and texT:" << endl;
+		cout << texS << texT << endl;
+		cout << "sLE and tLE" << endl;
+		cout << sLE << tLE << endl;
+		cout << top << " " << bottom << " " << left << " " << right << endl;
+#endif
+		for (int v = top; v <= bottom; v++) {
+			for (int u = left; u <= right; u++) {
+				V3 currPix(.5f + (float)u, .5f + (float)v, 1.0f);
+				V3 sid = eeqsm * currPix;
+				if (sid[0] < 0.0f || sid[1] < 0.0f || sid[2] < 0.0f)
+					continue; // outside of triangle
+				float currz = zLE * currPix;
+
+#if 1
+				currPix[2] = currz;
+				V3 UcurrPix = ppc->UnProject(currPix);
+				V3 uvw(0, 0, 0);
+				GetBarryCentric(verts[vinds[0]], verts[vinds[1]], verts[vinds[2]], UcurrPix, uvw);
+				float currS = (uvw.xyz[2] * textureSTpair[vinds[0]][0] + uvw.xyz[0] * textureSTpair[vinds[1]][0] + uvw.xyz[1] * textureSTpair[vinds[2]][0]) * t1->w;
+				float currT = (uvw.xyz[2] * textureSTpair[vinds[0]][1] + uvw.xyz[0] * textureSTpair[vinds[1]][1] + uvw.xyz[1] * textureSTpair[vinds[2]][1]) * t1->h;
+
+#endif
+
+#if 0
+				cout << "unprojected curr pix and barrycentric uvw:" << endl;
+				cout << UcurrPix << endl;
+				cout << uvw << endl;
+				cout << verts[vinds[0]] << endl;
+				cout << verts[vinds[1]] << endl;
+				cout << verts[vinds[2]] << endl;
+				cout << "texS" << textureSTpair[vinds[0]][0] << " " << textureSTpair[vinds[1]][0] << " " << textureSTpair[vinds[2]][0] << endl;
+				cout << "texT" << textureSTpair[vinds[0]][1] << " " << textureSTpair[vinds[1]][1] << " " << textureSTpair[vinds[2]][1] << endl;
+				cout << "j, i, T, s:" << v << "," << u << "," << currT << "," << currS << endl;
+				cout << pixIJ << endl;
+#endif
+
+#if 0
+				int currS = sLE * currPix * t1->w;
+				int currT = tLE * currPix * t1->h;
+				//cout << "j, i, T, s:" << v << "," << u << "," << currT << "," << currS << endl;
+				int pixIJ = currS + currT * t1->w;
+				//cout << pixIJ << endl;
+#endif
+
+#if 0
+				//use this two lines to check weather interpolation works or not based on the colors of the vertices
+				V3 color = V3(uvw[2], 0, 0);
 				unsigned int color_uvw = color.GetColor();
 
 #endif
@@ -922,7 +1033,7 @@ void TMesh::RenderTexture(FrameBuffer* fb, PPC* ppc, texture* t1) {
 				//unsigned int color_uvw = NonBilinearReginterpolation(t1, currS, currT);
 				if (fb->Farther(u, v, currz))
 					continue; // hidden
-				
+
 				fb->Set(u, v, color_uvw);
 			}
 		}
@@ -990,7 +1101,7 @@ unsigned int TMesh::NonBilinearReginterpolation(texture* t1, float uf, float vf)
 
 }
 
-unsigned int TMesh::bilinearinterpolation(texture* t1, float uf, float vf)
+unsigned int TMesh::bilinearinterpolation(FrameBuffer* t1, float uf, float vf)
 {
 	V3 colorBilinear;
 
@@ -1067,3 +1178,4 @@ void TMesh::Light(V3 C, V3 L, float ka) {
 	}
 
 }
+

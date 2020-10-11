@@ -20,6 +20,7 @@ public:
 	int handle(int guievent);
 	void SetBGR(unsigned int bgr);
 	void Set(int u, int v, unsigned int color);
+	int getPixelIndex(int u, int v);
 	unsigned int Get(int u, int v);
 	float GetZ(int u, int v);
 	void LoadTiff(char* fname);

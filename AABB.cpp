@@ -18,3 +18,12 @@ void AABB::AddPoint(V3 P) {
 	}
 
 }
+
+int AABB:: clipwithframe(int w, int h)
+{
+	int u = corners[0][0];
+	int v = corners[1][1];
+	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
+		return 0;
+	return 1;
+}

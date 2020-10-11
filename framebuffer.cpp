@@ -35,6 +35,25 @@ void FrameBuffer::ClearZB(float* zb1) {
 
 }
 
+int FrameBuffer::getPixelIndex(int u, int v)
+{
+	if (u >= w) {
+		//	cout << u << endl;
+		u = u % w;
+		//cout << "new U:" << u << endl;
+	}
+	if (v >= h)
+	{
+		//	cout << v << endl;
+		v = v % h;
+		//	cout << "new U:" << v << endl;
+	}
+
+	int id = u + v * w;
+	return id;
+
+}
+
 void FrameBuffer::draw() {
 
 	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pix);
