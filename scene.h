@@ -14,7 +14,7 @@ public:
 	GUI *gui;
 	FrameBuffer *fb;
 	FrameBuffer* fb0, *fb1, *fb3, *fb4;
-	PPC* ppc, *ppc0,*ppc1, *LightSrcPPC;
+	PPC* ppc, *ppc0,*ppc1, *LightSrcPPC, * LightSrcPPC1, * LightSrcPPC2, * LightSrcPPC3;
 	
 	TMesh* tmeshes;
 	int tmeshesN;
@@ -28,7 +28,7 @@ public:
 	void Render(FrameBuffer* rfb, PPC* rppc);
 	void RenderProjector(FrameBuffer* fb0, FrameBuffer* fb1,PPC* ppc0, PPC* ppc1);
 //	void Render(FrameBuffer* fb, PPC* ppc,TMesh* tmesh);
-	V3 L,f; // point light source
+	V3 L,L1,L2,L3,f; // point light source
 	float ka; // ambient lighting coefficient
 };
 

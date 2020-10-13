@@ -474,7 +474,7 @@ void TMesh::RenderFilled(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka) {
 }
 
 
-void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb1)
+void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zbx)
 {
 	//int trisN = 1;
 
@@ -521,7 +521,7 @@ void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb1)
 					continue; // outside of triangle
 				float currz = zLE * currPix;
 				//cout << currz << endl;
-				if (fb->FartherLightZ(fb->zbL1, u, v, currz))					
+				if (fb->FartherLightZ(zbx, u, v, currz))					
 					continue; // hidden
 				
 				//float colz = abs(currz)/10;
@@ -539,7 +539,7 @@ void TMesh::RenderShadowZmap(FrameBuffer* fb, PPC* LightSrcAsPPC, float* zb1)
 
 
 
-void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 C, V3 L, float ka) {
+void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, float* zbx, PPC* LightPPC, V3 C, V3 L, float ka) {
 	
 #if 0
 	project three vertices of the triangle camera plane
@@ -610,7 +610,7 @@ void TMesh::RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 
 				LightPPC->Project(unprojectedP, lighFrameP);
 				
 				
-				if (fb->FartherLightZCompare(fb->zbL1,lighFrameP[0], lighFrameP[1],lighFrameP[2] ))
+				if (fb->FartherLightZCompare(zbx,lighFrameP[0], lighFrameP[1],lighFrameP[2] ))
 				{
 
 					V3 currColor = cLEm * currPix;					

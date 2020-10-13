@@ -12,7 +12,7 @@ class PPC;
 class FrameBuffer : public Fl_Gl_Window {
 public:
 	unsigned int *pix; // pixel array
-	float *zb, *zbL1;
+	float *zb, *zbL1, * zbL2, * zbL3 , * zbL4 ;
 	int w, h;
 	FrameBuffer(int u0, int v0, int _w, int _h, unsigned int _id);
 	void draw();

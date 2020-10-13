@@ -18,6 +18,10 @@ FrameBuffer::FrameBuffer(int u0, int v0,
 	pix = new unsigned int[w*h];
 	zb = new float[w*h];
 	zbL1 = new float[w * h];
+	zbL2 = new float[w * h];
+	zbL3 = new float[w * h];
+	zbL4 = new float[w * h];
+
 
 }
 

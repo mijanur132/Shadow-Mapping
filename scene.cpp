@@ -89,27 +89,27 @@ Scene::Scene() {
 #endif
 #if 1
 	//Only forshadow part........................
-	V3 cc0(150.0f, 0.0f, -20.0f);
+	V3 cc0(0.0f, 0.0f, -20.0f);
 	tmeshes[0].LoadBin("geometry/teapot1K.bin");
 	//tmeshes[0].DrawPlanerRect(cc0, 150, col1.GetColor());	
 	tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0,1, 0), -90.0f);
-	tmeshes[0].DrawPlanerRectUpdateNormal();
+	//tmeshes[0].DrawPlanerRectUpdateNormal();
 	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
 	tmeshes[0].SetCenter(cc0);
 	tmeshes[0].onFlag = 1;
 
-	V3 cc1(200.0f, -40.0f, -750.0f);
+	V3 cc1(0.0f, -40.0f, -750.0f);
 	//tmeshes[0].LoadBin("geometry/auditorium.bin");
-	tmeshes[1].DrawPlanerRect(cc1, 600, col1.GetColor());
+	tmeshes[1].DrawPlanerRect(cc1, 1300, col1.GetColor());
 	//tmeshes[1].Rotate(tmeshes[0].GetCenter(), V3(1, 0, 0), -90.0f);
 	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
 	tmeshes[1].SetCenter(cc1);
 	tmeshes[1].onFlag = 1;
 
-	V3 cc2(10.0f, 0.0f, -20.0f);
+	V3 cc2(100.0f, 0.0f, -20.0f);
 	tmeshes[2].LoadBin("geometry/teapot1K.bin");
 	//tmeshes[2].DrawPlanerRect(cc2, 60, col1.GetColor());
-	//tmeshes[1].Rotate(tmeshes[0].GetCenter(), V3(1, 0, 0), -90.0f);
+	tmeshes[2].Rotate(tmeshes[2].GetCenter(), V3(0, 1, 0), -90.0f);
 	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
 	tmeshes[2].SetCenter(cc2);
 	tmeshes[2].onFlag = 1;
@@ -127,7 +127,7 @@ Scene::Scene() {
 	ppc0 = new PPC(hfov, fb0->w, fb0->h);
 	ppc1 = new PPC(hfov, fb1->w, fb1->h);
 
-	ppc1->SetPose(V3(0.0f, 35.0f, 120.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
+	ppc1->SetPose(V3(70.0f, 35.0f, 160.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
 //	float roll = -45.0f;
 	//ppc0->Roll(roll);
 	ppc1->PanLeftRight(0.0f);
@@ -141,11 +141,21 @@ Scene::Scene() {
 	//L = V3(0.0f, 140.0f,-200.0f);  //*********************************************center of light camera
 	L = V3(0.0f, 0.0f, 100.0f);  //*********************************************center of light camera
 	//f = V3(-10.0f, 0.0f, -50.0f);
-			f = tmeshes[0].GetCenter() + tmeshes[1].GetCenter() + tmeshes[1].GetCenter(); f = f / 3;
+	f = tmeshes[0].GetCenter()  + tmeshes[2].GetCenter(); f = f / 3;
 	float hfov1 = 90.0f;
 	LightSrcPPC = new PPC(hfov1, fb1->w, fb1->h);
 	LightSrcPPC->SetPose(L, f, V3(0, 1, 0));
 	ka = 0.2f;
+	L1 = V3(0.0f, 0.0f, 100.0f);
+	LightSrcPPC1 = new PPC(hfov1, fb1->w, fb1->h);
+	LightSrcPPC1->SetPose(L1 ,f, V3(0, 1, 0));
+	L2 = V3(0.0f, 0.0f, 100.0f);
+	LightSrcPPC2 = new PPC(hfov1, fb1->w, fb1->h);
+	LightSrcPPC2->SetPose(L3, f, V3(0, 1, 0));
+	L3 = V3(0.0f, 0.0f, 100.0f);
+	LightSrcPPC3 = new PPC(hfov1, fb1->w, fb1->h);
+	LightSrcPPC3->SetPose(L3, f, V3(0, 1, 0));
+
 
 
 #if 0
@@ -255,7 +265,7 @@ void Scene::RenderProjector(FrameBuffer* fb0, FrameBuffer* fb1, PPC* ppc0, PPC* 
 
 void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
 		cout << i << endl;
 
@@ -263,11 +273,15 @@ void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 		rfb->SetBGR(0xFFFFFFFF);
 		rfb->ClearZB();
 		rfb->ClearZB(rfb->zbL1);
+		rfb->ClearZB(rfb->zbL2); //for second light source
 
 		for (int tmi = 0; tmi < tmeshesN; tmi++) {
 			if (!tmeshes[tmi].onFlag)
 				continue;
 			tmeshes[tmi].RenderShadowZmap(rfb, LightSrcPPC, rfb->zbL1);
+			tmeshes[tmi].RenderShadowZmap(rfb, LightSrcPPC1, rfb->zbL2);
+			tmeshes[tmi].RenderShadowZmap(rfb, LightSrcPPC2, rfb->zbL3);
+			tmeshes[tmi].RenderShadowZmap(rfb, LightSrcPPC3, rfb->zbL4);
 
 		}
 	
@@ -277,27 +291,44 @@ void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 
 			V3 C(1.0f, 0.0f, 0.0f);
 			//tmeshes[tmi].Light(C, L, ka);			
-			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, LightSrcPPC, C, L, ka);
+			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, rfb->zbL1, LightSrcPPC, C, L, ka);
+			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc,rfb->zbL2, LightSrcPPC1, C, L, ka);
+			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, rfb->zbL2, LightSrcPPC2, C, L, ka);
+			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, rfb->zbL3, LightSrcPPC3, C, L, ka);
 		
 		}		
 			   
 		V3 col1 = V3(1, 0, 0);
+		V3 col2 = V3(0, 1, 0);
+		V3 col3 = V3(1, 1, 0);
+		V3 col4 = V3(1, 1, 1);
 		rfb->Draw3DPoint(LightSrcPPC->C, rppc, col1.GetColor(), 10);
+		rfb->Draw3DPoint(LightSrcPPC1->C, rppc, col2.GetColor(), 10);
+		rfb->Draw3DPoint(LightSrcPPC2->C, rppc, col1.GetColor(), 10);
+		rfb->Draw3DPoint(LightSrcPPC3->C, rppc, col2.GetColor(), 10);
 		rfb->Draw3DPoint(V3(0,0,0), rppc, col1.GetColor(), 15);
 		//fb1->Draw3DPoint(LightSrcPPC->c  + LightSrcPPC->C, rppc, col1.GetColor(), 20);
-		fb1->Draw3DSegment(LightSrcPPC->C, LightSrcPPC->GetVD().Normalized()*LightSrcPPC->GetF() + LightSrcPPC->C, rppc, col1, col1);
+		rfb->Draw3DSegment(LightSrcPPC->C, LightSrcPPC->GetVD().Normalized()*LightSrcPPC->GetF() + LightSrcPPC->C, rppc, col1, col1);
+		rfb->Draw3DSegment(LightSrcPPC1->C, LightSrcPPC1->GetVD().Normalized() * LightSrcPPC1->GetF() + LightSrcPPC1->C, rppc, col2, col2);
+		rfb->Draw3DSegment(LightSrcPPC2->C, LightSrcPPC2->GetVD().Normalized() * LightSrcPPC2->GetF() + LightSrcPPC2->C, rppc, col3, col3);
+		rfb->Draw3DSegment(LightSrcPPC3->C, LightSrcPPC3->GetVD().Normalized() * LightSrcPPC3->GetF() + LightSrcPPC3->C, rppc, col4, col4);
 		//fb1->Draw3DSegment(LightSrcPPC->C, LightSrcPPC->c * 3 + LightSrcPPC->C, rppc, col1, col1);
 
 		rfb->redraw();
 		Fl::check();
 			   		
-
+		L = L.RotatePoint(f, V3(0, 1, 0), -0.950f);
+		L1 = L1.RotatePoint(f, V3(0, 1, 0), 0.950f);
+		L2 = L2.RotatePoint(f, V3(1, 0, 0), 0.950f);
+		L3 = L3.RotatePoint(f, V3(1, 0, 0), -0.950f);
 		
-		L=L.RotatePoint(f, V3(0, 1, 0), -0.60f);
 		//L = L + (V3(0.100f, 00.0f, 0.0f));
 		//L = V3(140.0f, 0.0f, -100.0f);
 		//V3 f = V3(0.0f, 0.0f, -40.0f);
 		LightSrcPPC->SetPose(L, f, V3(0, 1, 0));
+		LightSrcPPC1->SetPose(L1, f, V3(0, 1, 0));
+		LightSrcPPC2->SetPose(L2, f, V3(0, 1, 0));
+		LightSrcPPC3->SetPose(L3, f, V3(0, 1, 0));
 		//rppc->PanLeftRight(-10.0f);	
 		
 

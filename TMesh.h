@@ -49,7 +49,7 @@ public:
 	void Light(V3 C, V3 L, float ka);
 	void RenderFilledLight(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka);
 	void RenderShadowZmap(FrameBuffer* fb, PPC* Lppc, float *Zb);
-	void RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 C, V3 L, float ka);
+	void RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, float* zb, PPC* LightPPC, V3 C, V3 L, float ka);
 	void RenderFilledProjector(FrameBuffer* fb0, FrameBuffer* fb1, PPC* ppc0, PPC* ppc1);
 
 };
