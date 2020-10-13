@@ -13,9 +13,9 @@ public:
 
 	GUI *gui;
 	FrameBuffer *fb;
-	FrameBuffer* fb1, *fb2, *fb3, *fb4;
-	PPC* ppc, *ppc3, *LightSrcPPC;
-	PPC* ppc1;
+	FrameBuffer* fb0, *fb1, *fb3, *fb4;
+	PPC* ppc, *ppc0,*ppc1, *LightSrcPPC;
+	
 	TMesh* tmeshes;
 	int tmeshesN;
 	texture *t1, *t2, *t3, *t4, *t5;
@@ -26,8 +26,9 @@ public:
 	void NewButton();
 	void Render();
 	void Render(FrameBuffer* rfb, PPC* rppc);
-	void Render(FrameBuffer* fb, PPC* ppc,TMesh* tmesh);
-	V3 L; // point light source
+	void RenderProjector(FrameBuffer* fb0, FrameBuffer* fb1,PPC* ppc0, PPC* ppc1);
+//	void Render(FrameBuffer* fb, PPC* ppc,TMesh* tmesh);
+	V3 L,f; // point light source
 	float ka; // ambient lighting coefficient
 };
 

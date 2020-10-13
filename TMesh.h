@@ -22,7 +22,8 @@ public:
 	void Allocate(int _vertsN, int _trisN);
 	void DrawCubeQuadFaces(FrameBuffer *fb, PPC *ppc, unsigned int color);
 	void DrawWireFrame(FrameBuffer *fb, PPC *ppc, unsigned int color);
-	void DrawPlanerRect(FrameBuffer* fb, V3 cc, float sideLength, PPC* ppc, unsigned int color);
+	void DrawPlanerRect(V3 cc, float sideLength,  unsigned int color);
+	void DrawPlanerRectUpdateNormal();
 	void LoadBin(char *fname);
 	V3 GetCenter();
 	void SetCenter(V3 center);
@@ -49,6 +50,6 @@ public:
 	void RenderFilledLight(FrameBuffer* fb, PPC* ppc, V3 C, V3 L, float ka);
 	void RenderShadowZmap(FrameBuffer* fb, PPC* Lppc, float *Zb);
 	void RenderFilledWithShadow(FrameBuffer* fb, PPC* ppc, PPC* LightPPC, V3 C, V3 L, float ka);
-//	void projectOnTexture(texture* t1, PPC* tppc);
+	void RenderFilledProjector(FrameBuffer* fb0, FrameBuffer* fb1, PPC* ppc0, PPC* ppc1);
 
 };

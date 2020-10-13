@@ -20,76 +20,159 @@ Scene::Scene() {
 	gui = new GUI();
 	gui->show();
 
+#if 0
+	prepare frame buffers 
+#endif 
+
 	int u0 = 20;
 	int v0 = 100;
-	int h = 300;
-	int w = 400;
+	int h = 600;
+	int w = 700;
 
-	fb = new FrameBuffer(u0, v0, w, h, 0);
-	fb->label("SW 1");
-	fb->show();
-	fb->redraw();
+	fb0 = new FrameBuffer(u0, v0, w, h, 0);
+	fb0->label("camera 0");
+	fb0->show();
+	fb0->redraw();
 
-	fb3 = new FrameBuffer(u0 + w + 30, v0, w, h, 0);
-	fb3->label("SW 3");
-	fb3->show();
-	fb3->redraw();
-
+	fb1 = new FrameBuffer(u0 + w + 30, v0, w, h, 0);
+	fb1->label("camera 1");
+	fb1->show();
+	fb1->redraw();
 
 	gui->uiw->position(u0, v0 + h + 50);
 
-	float hfov = 90.0f;
-	ppc = new PPC(hfov, fb->w, fb->h);
-	ppc3 = new PPC(hfov, fb3->w, fb3->h);
-	
-	tmeshesN = 3;
-	tmeshes = new TMesh[tmeshesN];
-
-	V3 cc(0.0f, 0.0f, -150.0f);   ////***********center of 0
-	
 	V3 col = V3(0, 0, 1.0f);
 	V3 col1 = V3(1.0f, 0, 0);
 
 
+#if 0
+	prepare the tmesh objects of the scene
+#endif 
 
-	t1 = new texture();
-	t1->init();
-	//t1->LoadTiff("orange.tiff");
-	//fb3->LoadTiff("orange.tiff");
+	tmeshesN = 3;
+	tmeshes = new TMesh[tmeshesN];
 
-	
-	//tmeshes[0].LoadBin("geometry/teapot1K.bin");
-	tmeshes[0].DrawPlanerRect(fb, cc, 120, ppc, col1.GetColor());	
-	tmeshes[0].SetCenter(cc);
-	tmeshes[0].onFlag = 0;
+
+#if 0
+	//Only for projector part **********************************
+	V3 cc0(0.0f, 0.0f, 0.0f);
+	tmeshes[0].LoadBin("geometry/auditorium.bin");
+	//tmeshes[0].DrawPlanerRect(cc0, 100, col1.GetColor());	
+	tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(1, 0, 0), -90.0f);
+	tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
+	tmeshes[0].SetCenter(cc0);
+	tmeshes[0].onFlag = 1;
 
 	   
-	tmeshes[1].LoadBin("geometry/auditorium.bin");
-		//tmeshes[1].LoadBin("geometry/teapot57K.bin");
+	tmeshes[1].LoadBin("geometry/teapot1K.bin");
+	//tmeshes[1].LoadBin("geometry/teapot57K.bin");
 	tmeshes[1].SetCenter(V3(0.0f, 0.0f, 0.0f));  //***************************center of 1
-//	tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(0, 1, 0), 90.0f);
-	tmeshes[1].onFlag = 1;
+	tmeshes[1].onFlag = 0;
 	tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(1, 0, 0), -90);
 
-	tmeshes[0].setXYtileN(1.0f, 1.0f);
-
-	cout <<"center"<< tmeshes[1].GetCenter() << endl;
-	//vf = 20.0f;
-	ppc->SetPose(V3(0.0f, 0.0f, 0.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
 	
-	//ppc3->SetPose(V3(0.0f, 0.0f, 30.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
-	L = V3(0.0f, 0.0f,0.0f);  //*********************************************center of light camera
+
+#if 0
+	prepare cameras
+#endif 
+
+	float hfov = 90.0f;
+	ppc0 = new PPC(hfov, fb0->w, fb0->h);
+	ppc1 = new PPC(hfov, fb1->w, fb1->h);
+	
+	ppc0->SetPose(V3(0, 0, -5), V3(0, 0, -100), V3(0, 1, 0));
+	float roll = -45.0f;
+	ppc0->Roll(roll);
+	ppc1->PanLeftRight(0.0f);
+
+	//***********Projector part ends
+#endif
+#if 1
+	//Only forshadow part........................
+	V3 cc0(150.0f, 0.0f, -20.0f);
+	tmeshes[0].LoadBin("geometry/teapot1K.bin");
+	//tmeshes[0].DrawPlanerRect(cc0, 150, col1.GetColor());	
+	tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0,1, 0), -90.0f);
+	tmeshes[0].DrawPlanerRectUpdateNormal();
+	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
+	tmeshes[0].SetCenter(cc0);
+	tmeshes[0].onFlag = 1;
+
+	V3 cc1(200.0f, -40.0f, -750.0f);
+	//tmeshes[0].LoadBin("geometry/auditorium.bin");
+	tmeshes[1].DrawPlanerRect(cc1, 600, col1.GetColor());
+	//tmeshes[1].Rotate(tmeshes[0].GetCenter(), V3(1, 0, 0), -90.0f);
+	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
+	tmeshes[1].SetCenter(cc1);
+	tmeshes[1].onFlag = 1;
+
+	V3 cc2(10.0f, 0.0f, -20.0f);
+	tmeshes[2].LoadBin("geometry/teapot1K.bin");
+	//tmeshes[2].DrawPlanerRect(cc2, 60, col1.GetColor());
+	//tmeshes[1].Rotate(tmeshes[0].GetCenter(), V3(1, 0, 0), -90.0f);
+	//tmeshes[0].Rotate(tmeshes[0].GetCenter(), V3(0, 1, 0), 180.0f);
+	tmeshes[2].SetCenter(cc2);
+	tmeshes[2].onFlag = 1;
+
+
+	/*
+	tmeshes[1].LoadBin("geometry/teapot1K.bin");
+	//tmeshes[1].LoadBin("geometry/teapot57K.bin");
+	tmeshes[1].SetCenter(V3(0.0f, 0.0f, -50.0f));  //***************************center of 1
+	tmeshes[1].onFlag = 1;
+	//tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(1, 0, 0), -90);
+	*/
+
+	float hfov = 90.0f;
+	ppc0 = new PPC(hfov, fb0->w, fb0->h);
+	ppc1 = new PPC(hfov, fb1->w, fb1->h);
+
+	ppc1->SetPose(V3(0.0f, 35.0f, 120.0f), tmeshes[1].GetCenter(), V3(0, 1, 0));
+//	float roll = -45.0f;
+	//ppc0->Roll(roll);
+	ppc1->PanLeftRight(0.0f);
+	//end shadow part........................
+#endif
+
+#if 0
+			our lightsource. 
+#endif
+
+	//L = V3(0.0f, 140.0f,-200.0f);  //*********************************************center of light camera
+	L = V3(0.0f, 0.0f, 100.0f);  //*********************************************center of light camera
+	//f = V3(-10.0f, 0.0f, -50.0f);
+			f = tmeshes[0].GetCenter() + tmeshes[1].GetCenter() + tmeshes[1].GetCenter(); f = f / 3;
 	float hfov1 = 90.0f;
-	LightSrcPPC = new PPC(hfov1, fb->w, fb->h);
-	//LightSrcPPC->SetPose(L, tmeshes[1].GetCenter(), V3(0, 1, 0));
+	LightSrcPPC = new PPC(hfov1, fb1->w, fb1->h);
+	LightSrcPPC->SetPose(L, f, V3(0, 1, 0));
 	ka = 0.2f;
 
-	fb->redraw();
 
+#if 0
+	our drawing or other rendering operation
+#endif
+
+	//fb0->redraw();
+	fb1->redraw();
+
+#if 0
+	Activate only for projector part
+
+
+	for (int i = 0; i < 3600; i++)
+	{
+		cout << i << endl;
+		RenderProjector(fb0, fb1, ppc0, ppc1);
+		ppc0->Roll(roll*-1.0f);
+		ppc0->PanLeftRight(-0.30f);
+		ppc0->Roll(roll);
+		//ppc1->PanLeftRight(-0.20f);
+	}
 	
-	Render(fb3, ppc3);
+#endif	
 
-	//Render(fb, ppc,  &tmeshes[1]);
+	Render(fb1, ppc1);
+	
 	//Render();
 
 }
@@ -99,26 +182,80 @@ void Scene::Render() {
 	{
 		//tmeshes[1].Rotate(tmeshes[1].GetCenter(), V3(1, 0, 0), 2);
 		cout << i << endl;
-		Render(fb3, ppc3);
+		Render(fb1, ppc1);
 		ppc->PanLeftRight(0.5);
 		Render(fb, ppc);
 		
-		fb->redraw();
-		fb3->redraw();
+		fb0->redraw();
+		fb1->redraw();
 		Fl::check();
 	}
 
 }
-void Scene::Render(FrameBuffer* rfb, PPC* rppc, TMesh* tmesh) {
 
+void Scene::RenderProjector(FrameBuffer* fb0, FrameBuffer* fb1, PPC* ppc0, PPC* ppc1) {
+#if 0
+	Prepare two camera and framebuffer: ppc0, fb0 for the projector and ppc1,fb1 for the output camera
+#endif
 
+		fb0->SetBGR(0xFFFFFFFF);
+		fb0->ClearZB();
+		fb0->ClearZB(fb0->zbL1);
+
+		fb1->SetBGR(0xFFFFFFFF);
+		fb1->ClearZB();
+		fb1->ClearZB(fb1->zbL1);
+
+#if 0
+	upload the image "I" on the the projector frame buffer if not done yet
+	Calculate the shadow map from the projector camera pc0 to the projector framebuffer fb0->zbl1 to check visiblity. 		
+#endif
+
+		//fb0->LoadTiff("orange.tiff");
+		fb0->LoadTiff("checker.tiff");
+
+		for (int tmi = 0; tmi < tmeshesN; tmi++) 
+		{
+			if (!tmeshes[tmi].onFlag)
+				continue;
+			tmeshes[tmi].RenderShadowZmap(fb0, ppc0, fb0->zbL1);
+			
+		}
+
+		V3 col1 = V3(1, 0, 0);
+		fb1->Draw3DPoint(ppc0->C, ppc1, col1.GetColor(), 10);
+		fb1->Draw3DPoint(ppc0->c * 3 + ppc0->C,  ppc1, col1.GetColor(), 10);
+		//fb1->Draw3DSegment(ppc0->C, ppc0->GetVD() * 3+ppc0->C, ppc1, col1, col1);
+		fb1->Draw3DSegment(ppc0->C, ppc0->c * 3 + ppc0->C, ppc1, col1, col1);
+
+#if 0
+	Now call the renderFilledProjector() function to update the camera. 
+#endif
+
+		for (int tmi = 0; tmi < tmeshesN; tmi++) {
+			if (!tmeshes[tmi].onFlag)
+				continue;
+			tmeshes[tmi].RenderFilled(fb1,  ppc1);
+			tmeshes[tmi].RenderFilledProjector(fb0, fb1, ppc0, ppc1);	
+			
+		
+		}
+#if 0
+		perform displaying operation
+#endif
+
+	fb0->redraw();
+	fb1->redraw();
+	Fl::check();
 
 }
 
 
+//not improtant right now.
+
 void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		cout << i << endl;
 
@@ -139,29 +276,28 @@ void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 				continue;
 
 			V3 C(1.0f, 0.0f, 0.0f);
-			tmeshes[tmi].Light(C, L, ka);			
+			//tmeshes[tmi].Light(C, L, ka);			
 			tmeshes[tmi].RenderFilledWithShadow(rfb, rppc, LightSrcPPC, C, L, ka);
-			//tmeshes[tmi].DrawWireFrame(rfb, rppc, C.GetColor());
-			
-			
-		}
 		
+		}		
 			   
 		V3 col1 = V3(1, 0, 0);
 		rfb->Draw3DPoint(LightSrcPPC->C, rppc, col1.GetColor(), 10);
+		rfb->Draw3DPoint(V3(0,0,0), rppc, col1.GetColor(), 15);
+		//fb1->Draw3DPoint(LightSrcPPC->c  + LightSrcPPC->C, rppc, col1.GetColor(), 20);
+		fb1->Draw3DSegment(LightSrcPPC->C, LightSrcPPC->GetVD().Normalized()*LightSrcPPC->GetF() + LightSrcPPC->C, rppc, col1, col1);
+		//fb1->Draw3DSegment(LightSrcPPC->C, LightSrcPPC->c * 3 + LightSrcPPC->C, rppc, col1, col1);
 
 		rfb->redraw();
 		Fl::check();
+			   		
 
-
-
-
-
-		//tmeshes[1].Rotate(tmeshes[1].GetCenter(),V3(0,1,0),0.20f);
-		//L=L.RotatePoint((tmeshes[1].GetCenter()), V3(0, 1, 0), -0.30f);
+		
+		L=L.RotatePoint(f, V3(0, 1, 0), -0.60f);
 		//L = L + (V3(0.100f, 00.0f, 0.0f));
 		//L = V3(140.0f, 0.0f, -100.0f);
-		//LightSrcPPC->SetPose(L, tmeshes[1].GetCenter(), V3(0, 1, 0));
+		//V3 f = V3(0.0f, 0.0f, -40.0f);
+		LightSrcPPC->SetPose(L, f, V3(0, 1, 0));
 		//rppc->PanLeftRight(-10.0f);	
 		
 
@@ -175,7 +311,7 @@ void Scene::Render(FrameBuffer* rfb, PPC* rppc) {
 void Scene::DBG() {
 	{
 	
-		Render(fb3, ppc);
+		Render(fb1, ppc);
 		return;
 		
 	}

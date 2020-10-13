@@ -20,4 +20,8 @@ public:
 	void Visualize(FrameBuffer *vfb, PPC *vppc, float vf);
 	void Visualize(FrameBuffer *vfb, PPC *vppc, float vf, FrameBuffer *fb);
 	float GetF();
+	void Roll(float angled);
+	V3 GetVD();
+
+	
 };

@@ -208,7 +208,8 @@ int FrameBuffer::FartherLightZCompare(float* zb1, int u, int v, float currz) {
 	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
 		return 1;
 	int uv = (h - 1 - v) * w + u;
-	if (currz+2 < zbL1[uv] )
+	//if (currz+2 < zbL1[uv] )
+	if (currz +02.25 < zbL1[uv])
 		return 1;
 	else {
 		return 0;
@@ -285,18 +286,22 @@ void FrameBuffer::Draw3DPoint(V3 P, PPC *ppc, unsigned int color, int psize) {
 
 unsigned int FrameBuffer::Get(int u, int v) {
 
+	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
+		return 0;
 	return pix[(h - 1 - v)*w + u];
 
 }
 
 float FrameBuffer::GetZ(int u, int v) {
-
+	if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
+		return 0;
 	return zb[(h - 1 - v)*w + u];
 
 }
 
 void FrameBuffer::showTextureImageAsUploaded(texture* t1) {
 
+	
 	for (int i = 0; i < t1->w; i++)
 	{
 		for (int j = 0; j < t1->h; j++)

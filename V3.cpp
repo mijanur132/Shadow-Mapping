@@ -147,6 +147,37 @@ V3 V3::RotatePoint(V3 aO, V3 adir, float theta) {
 
 V3 V3::Light(V3 lv, V3 nv, float ka) {
 	float kd = lv * nv; kd = (kd < 0.0f) ? 0.0f : kd;
+	//cout << "normal nv lv kd:" << nv<<" " <<lv<<" "<<kd<< endl;
 	V3& C = *this;
 	return C * (ka + (1.0f - ka) * kd);
 }
+
+V3 V3::RotateThisVectorAboutDirection(V3 a, float angled) {
+
+	// find auxiliary axis
+	V3 aux;
+	if (fabsf(a[0]) > fabsf(a[1])) {
+		aux = V3(0.0f, 1.0f, 0.0f);
+	}
+	else {
+		aux = V3(1.0f, 0.0f, 0.0f);
+	}
+
+	V3 a0 = (aux ^ a).Normalized();
+	V3 a2 = (a0 ^ a).Normalized();
+	M33 lcs;
+	lcs[0] = a0;
+	lcs[1] = a;
+	lcs[2] = a2;
+
+	V3& p = *this;
+	// change to local coordinate system O, a0, a, a2
+	V3 p1 = lcs * p;
+	// rotate about "Second axis" in local coordinate system;
+	M33 mr; mr.SetRotationAboutY(angled);
+	V3 p2 = mr * p1;
+	V3 p3 = lcs.Inverted() * p2;
+	return p3;
+
+}
+

@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include<istream>
+#include<iostream>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ public:
 
 	//V3 UnitVector();
 //	V3 RotateThisPointAboutArbitraryAxis(V3 O, V3 a, float angled);     //i
-	//V3 RotateThisVectorAboutDirection(V3 a, float angled);				//k
+	V3 RotateThisVectorAboutDirection(V3 a, float angled);				//k
 	
 
 	// cerr << v;

@@ -135,3 +135,19 @@ void PPC::Visualize(FrameBuffer *vfb, PPC *vppc, float vf, FrameBuffer *fb) {
 	}
 
 }
+
+void PPC::Roll(float angled) {
+
+
+	V3 dv = GetVD().Normalized();
+	a = a.RotateThisVectorAboutDirection(dv, angled);
+	b = b.RotateThisVectorAboutDirection(dv, angled);
+	c = c.RotateThisVectorAboutDirection(dv, angled);
+	
+
+}
+V3 PPC::GetVD() {
+
+	return (a ^ b).Normalized();
+
+}
